@@ -3,11 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-// 🔐 Safe Admin Check with TS optional chaining
+// 🔐 Safe Admin Check
 async function requireAdmin() {
-  const session = await getServerSession(authOptions);
+  // Quick fix for TypeScript during build
+  const session = await getServerSession(authOptions) as any;
 
-  // TypeScript-safe check: session OR session.user OR session.user.role may be undefined
   if (!session?.user || session.user.role !== "ADMIN") {
     return null;
   }
@@ -46,8 +46,7 @@ export async function PATCH(req: NextRequest) {
   }
 
   try {
-    const body = await req.json();
-    const { id, published } = body;
+    const { id, published } = await req.json();
 
     if (!id) {
       return NextResponse.json(
