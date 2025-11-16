@@ -3,12 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-// POST → Submit a new article (must be logged in)
+// POST → Submit a new article
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
+  // Cast session as ANY to avoid TS complaining
+  const session = (await getServerSession(authOptions)) as any;
 
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user?.id) {
+    return NextResponse.json(
+      { error: "Not authenticated" },
+      { status: 401 }
+    );
   }
 
   try {
@@ -26,16 +30,16 @@ export async function POST(req: NextRequest) {
         title,
         content,
         published: false, // new articles start unpublished
-        authorId: session.user.id,
+        authorId: session.user.id, // TS-safe because of the cast
       },
     });
 
-    return NextResponse.json({
-      message: "Article submitted for review",
-      article,
-    });
+    return NextResponse.json(
+      { message: "Article submitted", article },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error(error);
+    console.error("SUBMIT ARTICLE ERROR:", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }
@@ -43,18 +47,18 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET → Public list of published articles
+// GET → Fetch published articles only
 export async function GET() {
   try {
     const articles = await prisma.article.findMany({
-      where: { published: true }, // ONLY published articles
+      where: { published: true },
       include: { author: true },
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(articles);
+    return NextResponse.json(articles, { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.error("PUBLIC GET ERROR:", error);
     return NextResponse.json(
       { error: "Failed to fetch articles" },
       { status: 500 }
