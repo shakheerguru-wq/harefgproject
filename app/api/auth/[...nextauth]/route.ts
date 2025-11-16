@@ -24,12 +24,12 @@ export const authOptions: NextAuthOptions = {
         const valid = await compare(credentials.password, user.password);
         if (!valid) return null;
 
-        // Return all user data needed for sessions
+        // Return full user with role (TS-safe)
         return {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role, // VERY IMPORTANT
+          role: (user as any).role ?? "USER",
         };
       },
     }),
@@ -44,22 +44,28 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    // Save user ID + role into the JWT token
+    // Save user ID + role into JWT
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = user.role;
+      const u = user as any; // TS fix
+
+      if (u) {
+        token.id = u.id;
+        token.role = u.role ?? "USER";
       }
+
       return token;
     },
 
-    // Make JWT data available to the client session
+    // Expose token data to the session
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
+      const s = session as any; // TS fix
+
+      if (s.user) {
+        s.user.id = token.id;
+        s.user.role = token.role ?? "USER";
       }
-      return session;
+
+      return s;
     },
   },
 
