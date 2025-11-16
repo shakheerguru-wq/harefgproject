@@ -3,13 +3,14 @@ export const dynamic = "force-dynamic";
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import React from "react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
@@ -63,7 +64,9 @@ export default function LoginPage() {
               type="email"
               className="w-full px-4 py-3 rounded-lg bg-black border border-yellow-700/40 text-yellow-100 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/40 outline-none transition-all"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEmail(e.target.value)
+              }
               required
             />
           </div>
@@ -77,7 +80,9 @@ export default function LoginPage() {
               type="password"
               className="w-full px-4 py-3 rounded-lg bg-black border border-yellow-700/40 text-yellow-100 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/40 outline-none transition-all"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
               required
             />
           </div>
