@@ -1,13 +1,16 @@
 'use client';
 export const dynamic = "force-dynamic";
 
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 export default function SubmitArticlePage() {
-  const { data: session, status } = useSession();
+  // ❗ SAFE SESSION WRAPPER — prevents Vercel prerender crash
+  const sessionData = useSession();
+  const session = sessionData.data;
+  const status = sessionData.status;
+
   const router = useRouter();
 
   const [title, setTitle] = useState("");
@@ -17,7 +20,6 @@ export default function SubmitArticlePage() {
   useEffect(() => {
     if (status === "loading") return;
 
-    // Redirect to login if no session
     if (!session) {
       router.push("/login");
     } else {
@@ -25,7 +27,7 @@ export default function SubmitArticlePage() {
     }
   }, [session, status, router]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const res = await fetch("/api/articles", {
@@ -57,17 +59,23 @@ export default function SubmitArticlePage() {
           type="text"
           placeholder="Title"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setTitle(e.target.value)
+          }
           required
           style={{ padding: 8 }}
         />
+
         <textarea
           placeholder="Content"
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setContent(e.target.value)
+          }
           required
           style={{ padding: 8, minHeight: 150 }}
         />
+
         <button type="submit" style={{ padding: 8, cursor: "pointer" }}>
           Submit
         </button>
