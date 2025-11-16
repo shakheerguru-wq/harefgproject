@@ -3,11 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-// 🔐 Admin Check
+// 🔐 Safe Admin Check with TS optional chaining
 async function requireAdmin() {
   const session = await getServerSession(authOptions);
 
-  if (!session || session.user.role !== "ADMIN") {
+  // TypeScript-safe check: session OR session.user OR session.user.role may be undefined
+  if (!session?.user || session.user.role !== "ADMIN") {
     return null;
   }
 
@@ -27,9 +28,9 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(articles);
+    return NextResponse.json(articles, { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.error("ADMIN GET ERROR:", error);
     return NextResponse.json(
       { error: "Failed to fetch articles" },
       { status: 500 }
@@ -45,7 +46,8 @@ export async function PATCH(req: NextRequest) {
   }
 
   try {
-    const { id, published } = await req.json();
+    const body = await req.json();
+    const { id, published } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -59,9 +61,9 @@ export async function PATCH(req: NextRequest) {
       data: { published },
     });
 
-    return NextResponse.json(article);
+    return NextResponse.json(article, { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.error("ADMIN PATCH ERROR:", error);
     return NextResponse.json(
       { error: "Failed to update article" },
       { status: 500 }
