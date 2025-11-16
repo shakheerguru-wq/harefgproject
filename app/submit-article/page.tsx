@@ -1,15 +1,17 @@
 'use client';
 export const dynamic = "force-dynamic";
+export const ssr = false;
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import React from "react";
 
 export default function SubmitArticlePage() {
-  // ❗ SAFE SESSION WRAPPER — prevents Vercel prerender crash
+  // SAFE SESSION ACCESS (prevents SSR crash)
   const sessionData = useSession();
-  const session = sessionData.data;
-  const status = sessionData.status;
+  const session = sessionData?.data;
+  const status = sessionData?.status;
 
   const router = useRouter();
 
