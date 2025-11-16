@@ -1,14 +1,22 @@
-export default function Button({ children, className = "", ...props }) {
+import React from "react";
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export default function Button({
+  children,
+  className = "",
+  ...props
+}: ButtonProps) {
   return (
     <button
       {...props}
-      className={`
-        px-4 py-2 rounded-xl font-semibold text-white shadow-md
-        bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90
-        transition-all ${className}
-      `}
+      className={`px-4 py-2 rounded-lg font-semibold transition ${className}`}
     >
       {children}
     </button>
   );
 }
+
