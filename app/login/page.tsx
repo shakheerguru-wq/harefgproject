@@ -1,9 +1,17 @@
-'use client';
+"use client";
 export const dynamic = "force-dynamic";
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
+import localFont from "next/font/local";
 import React from "react";
+
+// Load custom font
+const CarpetFont = localFont({
+  src: "../../public/fonts/ltcarpet.ttf",
+  variable: "--font-carpet",
+});
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -28,81 +36,107 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden">
-      
-      {/* Gold vignette glow */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70 pointer-events-none"></div>
-
-      {/* Golden spotlight */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-b from-yellow-500/20 to-transparent blur-[160px] opacity-50"></div>
-
-      {/* Main card */}
-      <div className="relative z-10 w-full max-w-md p-10 rounded-2xl border border-yellow-600/20 bg-gradient-to-b from-zinc-900 to-black shadow-2xl shadow-black/80">
+    <div
+      className={`${CarpetFont.variable} min-h-screen flex items-center justify-center bg-white px-6`}
+      style={{ fontFamily: "var(--font-carpet)" }}
+    >
+      {/* Main container */}
+      <div className="w-full max-w-md p-10 rounded-3xl border border-black/10 shadow-[0_0_40px_rgba(0,0,0,0.08)] bg-white">
+        
+        {/* Logo */}
+        <div className="w-full flex justify-center mb-8">
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={120}
+            height={120}
+            className="object-contain"
+          />
+        </div>
 
         {/* Title */}
-        <h1 className="text-4xl font-extrabold text-center mb-6 text-yellow-500 tracking-wider font-[Cinzel]">
+        <h1 className="text-4xl text-center mb-4 tracking-wide text-black"
+            style={{ fontFamily: "var(--font-carpet)" }}>
           Welcome Back
         </h1>
-        <p className="text-center text-yellow-300/80 mb-8 font-light tracking-wide">
-          Log in to your Noir Press account
+
+        {/* Subtitle */}
+        <p className="text-center text-black/60 mb-8 tracking-wide text-lg"
+            style={{ fontFamily: "var(--font-carpet)" }}>
+          Log in to your account
         </p>
 
         {/* Error */}
         {error && (
-          <p className="text-red-400 text-center mb-4">{error}</p>
+          <p className="text-red-600 text-center mb-4 text-lg"
+             style={{ fontFamily: "var(--font-carpet)" }}>
+            {error}
+          </p>
         )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-
+          
           {/* Email */}
           <div>
-            <label className="block text-yellow-500 font-semibold mb-2 tracking-wide">
+            <label className="block text-black font-semibold mb-2 tracking-wide"
+                   style={{ fontFamily: "var(--font-carpet)" }}>
               Email
             </label>
             <input
               type="email"
-              className="w-full px-4 py-3 rounded-lg bg-black border border-yellow-700/40 text-yellow-100 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/40 outline-none transition-all"
+              className="w-full px-4 py-3 rounded-lg border border-black/20 text-black focus:border-black focus:ring-2 focus:ring-black/20 outline-none transition-all bg-white"
               value={email}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setEmail(e.target.value)
               }
               required
+              style={{ fontFamily: "var(--font-carpet)" }}
             />
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-yellow-500 font-semibold mb-2 tracking-wide">
+            <label className="block text-black font-semibold mb-2 tracking-wide"
+                   style={{ fontFamily: "var(--font-carpet)" }}>
               Password
             </label>
             <input
               type="password"
-              className="w-full px-4 py-3 rounded-lg bg-black border border-yellow-700/40 text-yellow-100 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/40 outline-none transition-all"
+              className="w-full px-4 py-3 rounded-lg border border-black/20 text-black focus:border-black focus:ring-2 focus:ring-black/20 outline-none transition-all bg-white"
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setPassword(e.target.value)
               }
               required
+              style={{ fontFamily: "var(--font-carpet)" }}
             />
           </div>
 
           {/* Login button */}
           <button
             type="submit"
-            className="w-full py-3 rounded-lg font-semibold text-black bg-yellow-500 hover:bg-yellow-400 transition-all text-lg shadow-[0_0_15px_rgba(255,215,0,0.4)] hover:shadow-[0_0_25px_rgba(255,215,0,0.6)]"
+            className="w-full py-3 rounded-lg font-semibold text-white text-lg transition-all bg-black hover:bg-black/80 shadow-[0_0_15px_rgba(0,0,0,0.25)]"
+            style={{ fontFamily: "var(--font-carpet)" }}
           >
             Login
           </button>
+
         </form>
 
         {/* Footer */}
-        <p className="text-center mt-6 text-yellow-300/70 text-sm">
+        <p className="text-center mt-6 text-black/70 text-sm"
+           style={{ fontFamily: "var(--font-carpet)" }}>
           Don’t have an account?{" "}
-          <a href="/signup" className="text-yellow-400 hover:text-yellow-200 transition font-semibold">
+          <a
+            href="/signup"
+            className="text-black font-semibold underline hover:text-black/60 transition"
+            style={{ fontFamily: "var(--font-carpet)" }}
+          >
             Sign Up
           </a>
         </p>
+
       </div>
     </div>
   );
