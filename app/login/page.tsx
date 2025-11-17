@@ -6,14 +6,14 @@ import { signIn } from "next-auth/react";
 import Image from "next/image";
 import localFont from "next/font/local";
 
-// Load custom fonts
+// ✅ CORRECT FONT PATHS FOR VERCEL
 const CarpetFont = localFont({
-  src: "../../public/fonts/ltcarpet.ttf",
+  src: "/fonts/ltcarpet.ttf",
   variable: "--font-carpet",
 });
 
 const EpoqueFont = localFont({
-  src: "../../public/fonts/1927 epoque.otf",
+  src: "/fonts/1927 epoque.otf",
   variable: "--font-epoque",
 });
 
@@ -21,8 +21,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(""); 
-  const [validationError, setValidationError] = useState(""); 
+  const [error, setError] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -142,7 +142,6 @@ export default function LoginPage() {
           </p>
         )}
 
-        {/* FORM */}
         <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* EMAIL */}
@@ -156,7 +155,6 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            {/* Inline validation */}
             {validationError && (
               <p
                 className="text-red-600 text-sm mt-1"
@@ -179,7 +177,6 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              {/* SHOW/HIDE */}
               <span
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer show-toggle text-black"
