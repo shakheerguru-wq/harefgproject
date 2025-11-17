@@ -14,17 +14,27 @@ export const authOptions: NextAuthOptions = {
       },
 
       async authorize(credentials) {
-        if (!credentials) return null;
+        if (!credentials) {
+          throw new Error("Missing credentials");
+        }
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
-        if (!user) return null;
+
+        // EMAIL DOES NOT EXIST
+        if (!user) {
+          throw new Error("Invalid email or password");
+        }
 
         const valid = await compare(credentials.password, user.password);
-        if (!valid) return null;
 
-        // Return full user with role (TS-safe)
+        // WRONG PASSWORD
+        if (!valid) {
+          throw new Error("Invalid email or password");
+        }
+
+        // SUCCESS
         return {
           id: user.id,
           email: user.email,
@@ -44,9 +54,8 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    // Save user ID + role into JWT
     async jwt({ token, user }) {
-      const u = user as any; // TS fix
+      const u = user as any;
 
       if (u) {
         token.id = u.id;
@@ -56,9 +65,8 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
 
-    // Expose token data to the session
     async session({ session, token }) {
-      const s = session as any; // TS fix
+      const s = session as any;
 
       if (s.user) {
         s.user.id = token.id;
@@ -74,3 +82,4 @@ export const authOptions: NextAuthOptions = {
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
+

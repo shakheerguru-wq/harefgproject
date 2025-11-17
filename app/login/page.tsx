@@ -5,139 +5,216 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import localFont from "next/font/local";
-import React from "react";
 
-// Load custom font
+// Load custom fonts
 const CarpetFont = localFont({
   src: "../../public/fonts/ltcarpet.ttf",
   variable: "--font-carpet",
 });
 
+const EpoqueFont = localFont({
+  src: "../../public/fonts/1927 epoque.otf",
+  variable: "--font-epoque",
+});
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(""); 
+  const [validationError, setValidationError] = useState(""); 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
 
-    const res = await signIn("credentials", {
+    setError("");
+    setValidationError("");
+
+    if (!email.trim() || !password.trim()) {
+      setValidationError("Please enter your email and password.");
+      return;
+    }
+
+    const res: any = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
 
     if (res?.error) {
-      setError("Invalid email or password");
-    } else {
-      window.location.href = "/"; // redirect to home
+      setError("Incorrect email or password.");
+      return;
     }
+
+    window.location.href = "/";
+  };
+
+  const triggerUnderline = (e: React.MouseEvent<HTMLElement>) => {
+    const el = e.currentTarget;
+    el.classList.add("underline-sweep");
+    setTimeout(() => el.classList.remove("underline-sweep"), 450);
   };
 
   return (
     <div
-      className={`${CarpetFont.variable} min-h-screen flex items-center justify-center bg-white px-6`}
+      className={`${CarpetFont.variable} ${EpoqueFont.variable} min-h-screen w-full bg-white flex justify-center px-4 py-10`}
       style={{ fontFamily: "var(--font-carpet)" }}
     >
-      {/* Main container */}
-      <div className="w-full max-w-md p-10 rounded-3xl border border-black/10 shadow-[0_0_40px_rgba(0,0,0,0.08)] bg-white">
-        
-        {/* Logo */}
+      <style jsx global>{`
+        .underline-sweep {
+          position: relative;
+          overflow: hidden;
+        }
+        .underline-sweep::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 3px;
+          background: gold;
+          transform: translateX(-100%);
+          animation: sweep 0.45s ease-out forwards;
+        }
+        @keyframes sweep {
+          to {
+            transform: translateX(0%);
+          }
+        }
+
+        .show-toggle {
+          transition:
+            background-color 0.25s ease,
+            color 0.25s ease,
+            border-color 0.25s ease,
+            transform 0.25s ease;
+          padding: 2px 8px;
+          border-radius: 4px;
+          border: 1px solid transparent;
+        }
+
+        .show-toggle:active {
+          background-color: black !important;
+          color: white !important;
+          border-color: black !important;
+          transform: scale(0.9);
+        }
+      `}</style>
+
+      <div className="w-full max-w-md bg-white border border-black/10 shadow-[0_0_40px_rgba(0,0,0,0.05)] rounded-3xl p-10">
+
+        {/* LOGO */}
         <div className="w-full flex justify-center mb-8">
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={120}
-            height={120}
-            className="object-contain"
-          />
+          <a href="/" onClick={triggerUnderline as any} className="cursor-pointer">
+            <Image
+              src="/logo.svg"
+              alt="Logo"
+              width={280}
+              height={280}
+              className="object-contain"
+            />
+          </a>
         </div>
 
-        {/* Title */}
-        <h1 className="text-4xl text-center mb-4 tracking-wide text-black"
-            style={{ fontFamily: "var(--font-carpet)" }}>
-          Welcome Back
+        {/* TITLE */}
+        <h1
+          className="text-5xl text-center mb-3 text-black tracking-wide"
+          style={{ fontFamily: "var(--font-carpet)" }}
+        >
+          Welcome Boss
         </h1>
 
-        {/* Subtitle */}
-        <p className="text-center text-black/60 mb-8 tracking-wide text-lg"
-            style={{ fontFamily: "var(--font-carpet)" }}>
+        {/* SUBTITLE */}
+        <p
+          className="text-center text-black/60 mb-6 text-lg"
+          style={{ fontFamily: "var(--font-epoque)" }}
+        >
           Log in to your account
         </p>
 
-        {/* Error */}
+        {/* WRONG EMAIL/PASSWORD ERROR */}
         {error && (
-          <p className="text-red-600 text-center mb-4 text-lg"
-             style={{ fontFamily: "var(--font-carpet)" }}>
+          <p
+            className="text-red-600 text-center text-sm mb-4"
+            style={{ fontFamily: "var(--font-epoque)" }}
+          >
             {error}
           </p>
         )}
 
-        {/* Form */}
+        {/* FORM */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          
-          {/* Email */}
+
+          {/* EMAIL */}
           <div>
-            <label className="block text-black font-semibold mb-2 tracking-wide"
-                   style={{ fontFamily: "var(--font-carpet)" }}>
-              Email
-            </label>
+            <label className="block text-black font-semibold mb-1">Email</label>
+
             <input
               type="email"
-              className="w-full px-4 py-3 rounded-lg border border-black/20 text-black focus:border-black focus:ring-2 focus:ring-black/20 outline-none transition-all bg-white"
+              className="w-full px-4 py-3 rounded-lg border border-black/20 bg-white text-black focus:ring-2 focus:ring-black/20 outline-none"
               value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setEmail(e.target.value)
-              }
-              required
-              style={{ fontFamily: "var(--font-carpet)" }}
+              onChange={(e) => setEmail(e.target.value)}
             />
+
+            {/* Inline validation */}
+            {validationError && (
+              <p
+                className="text-red-600 text-sm mt-1"
+                style={{ fontFamily: "var(--font-epoque)" }}
+              >
+                {validationError}
+              </p>
+            )}
           </div>
 
-          {/* Password */}
+          {/* PASSWORD */}
           <div>
-            <label className="block text-black font-semibold mb-2 tracking-wide"
-                   style={{ fontFamily: "var(--font-carpet)" }}>
-              Password
-            </label>
-            <input
-              type="password"
-              className="w-full px-4 py-3 rounded-lg border border-black/20 text-black focus:border-black focus:ring-2 focus:ring-black/20 outline-none transition-all bg-white"
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPassword(e.target.value)
-              }
-              required
-              style={{ fontFamily: "var(--font-carpet)" }}
-            />
+            <label className="block text-black font-semibold mb-1">Password</label>
+
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="w-full px-4 py-3 pr-16 rounded-lg border border-black/20 bg-white text-black focus:ring-2 focus:ring-black/20 outline-none"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+
+              {/* SHOW/HIDE */}
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer show-toggle text-black"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </span>
+            </div>
           </div>
 
-          {/* Login button */}
+          {/* LOGIN BUTTON */}
           <button
             type="submit"
-            className="w-full py-3 rounded-lg font-semibold text-white text-lg transition-all bg-black hover:bg-black/80 shadow-[0_0_15px_rgba(0,0,0,0.25)]"
-            style={{ fontFamily: "var(--font-carpet)" }}
+            onClick={triggerUnderline as any}
+            className="w-full py-3 mt-4 bg-black text-white text-lg rounded-lg shadow-md hover:bg-black/85 active:scale-[0.98] cursor-pointer"
           >
             Login
           </button>
-
         </form>
 
-        {/* Footer */}
-        <p className="text-center mt-6 text-black/70 text-sm"
-           style={{ fontFamily: "var(--font-carpet)" }}>
+        {/* FOOTER */}
+        <p
+          className="text-center mt-6 text-black/70 text-sm"
+          style={{ fontFamily: "var(--font-epoque)" }}
+        >
           Don’t have an account?{" "}
           <a
             href="/signup"
-            className="text-black font-semibold underline hover:text-black/60 transition"
-            style={{ fontFamily: "var(--font-carpet)" }}
+            onClick={triggerUnderline as any}
+            className="text-black underline font-semibold cursor-pointer hover:text-black/60"
           >
             Sign Up
           </a>
         </p>
-
       </div>
     </div>
   );
 }
+
