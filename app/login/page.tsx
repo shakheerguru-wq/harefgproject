@@ -6,14 +6,14 @@ import { signIn } from "next-auth/react";
 import Image from "next/image";
 import localFont from "next/font/local";
 
-// ✅ CORRECT FONT PATHS FOR VERCEL
+// ✅ UPDATED FONT PATHS (lowercase, hyphen-safe)
 const CarpetFont = localFont({
   src: "/fonts/ltcarpet.ttf",
   variable: "--font-carpet",
 });
 
 const EpoqueFont = localFont({
-  src: "/fonts/1927 epoque.otf",
+  src: "/fonts/1927-epoque.otf",
   variable: "--font-epoque",
 });
 
@@ -103,7 +103,6 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md bg-white border border-black/10 shadow-[0_0_40px_rgba(0,0,0,0.05)] rounded-3xl p-10">
 
-        {/* LOGO */}
         <div className="w-full flex justify-center mb-8">
           <a href="/" onClick={triggerUnderline as any} className="cursor-pointer">
             <Image
@@ -116,7 +115,6 @@ export default function LoginPage() {
           </a>
         </div>
 
-        {/* TITLE */}
         <h1
           className="text-5xl text-center mb-3 text-black tracking-wide"
           style={{ fontFamily: "var(--font-carpet)" }}
@@ -124,7 +122,6 @@ export default function LoginPage() {
           Welcome Boss
         </h1>
 
-        {/* SUBTITLE */}
         <p
           className="text-center text-black/60 mb-6 text-lg"
           style={{ fontFamily: "var(--font-epoque)" }}
@@ -132,7 +129,6 @@ export default function LoginPage() {
           Log in to your account
         </p>
 
-        {/* WRONG EMAIL/PASSWORD ERROR */}
         {error && (
           <p
             className="text-red-600 text-center text-sm mb-4"
@@ -143,8 +139,7 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-
-          {/* EMAIL */}
+          
           <div>
             <label className="block text-black font-semibold mb-1">Email</label>
 
@@ -165,7 +160,6 @@ export default function LoginPage() {
             )}
           </div>
 
-          {/* PASSWORD */}
           <div>
             <label className="block text-black font-semibold mb-1">Password</label>
 
@@ -186,7 +180,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* LOGIN BUTTON */}
           <button
             type="submit"
             onClick={triggerUnderline as any}
@@ -196,7 +189,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* FOOTER */}
         <p
           className="text-center mt-6 text-black/70 text-sm"
           style={{ fontFamily: "var(--font-epoque)" }}
@@ -214,4 +206,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
