@@ -4,30 +4,6 @@ export const dynamic = "force-dynamic";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
-import localFont from "next/font/local";
-
-// ✅ FIXED FONT IMPORTS — using array syntax (required for absolute paths)
-const CarpetFont = localFont({
-  src: [
-    {
-      path: "/fonts/ltcarpet.ttf",
-      weight: "400",
-      style: "normal",
-    },
-  ],
-  variable: "--font-carpet",
-});
-
-const EpoqueFont = localFont({
-  src: [
-    {
-      path: "/fonts/1927-epoque.otf",
-      weight: "400",
-      style: "normal",
-    },
-  ],
-  variable: "--font-epoque",
-});
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -69,8 +45,8 @@ export default function LoginPage() {
 
   return (
     <div
-      className={`${CarpetFont.variable} ${EpoqueFont.variable} min-h-screen w-full bg-white flex justify-center px-4 py-10`}
-      style={{ fontFamily: "var(--font-carpet)" }}
+      className="min-h-screen w-full bg-white flex justify-center px-4 py-10"
+      style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
     >
       <style jsx global>{`
         .underline-sweep {
@@ -116,7 +92,6 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md bg-white border border-black/10 shadow-[0_0_40px_rgba(0,0,0,0.05)] rounded-3xl p-10">
 
-        {/* LOGO */}
         <div className="w-full flex justify-center mb-8">
           <a href="/" onClick={triggerUnderline as any} className="cursor-pointer">
             <Image
@@ -129,35 +104,22 @@ export default function LoginPage() {
           </a>
         </div>
 
-        {/* TITLE */}
-        <h1
-          className="text-5xl text-center mb-3 text-black tracking-wide"
-          style={{ fontFamily: "var(--font-carpet)" }}
-        >
+        <h1 className="text-5xl text-center mb-3 text-black tracking-wide">
           Welcome Boss
         </h1>
 
-        {/* SUBTITLE */}
-        <p
-          className="text-center text-black/60 mb-6 text-lg"
-          style={{ fontFamily: "var(--font-epoque)" }}
-        >
+        <p className="text-center text-black/60 mb-6 text-lg">
           Log in to your account
         </p>
 
-        {/* WRONG EMAIL/PASSWORD ERROR */}
         {error && (
-          <p
-            className="text-red-600 text-center text-sm mb-4"
-            style={{ fontFamily: "var(--font-epoque)" }}
-          >
+          <p className="text-red-600 text-center text-sm mb-4">
             {error}
           </p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-
-          {/* EMAIL */}
+          
           <div>
             <label className="block text-black font-semibold mb-1">
               Email
@@ -171,16 +133,12 @@ export default function LoginPage() {
             />
 
             {validationError && (
-              <p
-                className="text-red-600 text-sm mt-1"
-                style={{ fontFamily: "var(--font-epoque)" }}
-              >
+              <p className="text-red-600 text-sm mt-1">
                 {validationError}
               </p>
             )}
           </div>
 
-          {/* PASSWORD */}
           <div>
             <label className="block text-black font-semibold mb-1">
               Password
@@ -194,17 +152,15 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              {/* SHOW/HIDE BUTTON */}
               <span
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-black show-toggle"
+                className="absolute right-4 top-1/2 -translate-y-1/2 show-toggle text-black"
               >
                 {showPassword ? "Hide" : "Show"}
               </span>
             </div>
           </div>
 
-          {/* LOGIN BUTTON */}
           <button
             type="submit"
             onClick={triggerUnderline as any}
@@ -214,11 +170,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* FOOTER */}
-        <p
-          className="text-center mt-6 text-black/70 text-sm"
-          style={{ fontFamily: "var(--font-epoque)" }}
-        >
+        <p className="text-center mt-6 text-black/70 text-sm">
           Don’t have an account?{" "}
           <a
             href="/signup"
@@ -232,4 +184,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
